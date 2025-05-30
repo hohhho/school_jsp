@@ -1,0 +1,40 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<%--
+		session은 request와 달리 브라우저가 실행되는 동안
+		처음부터 끝까지 데이터가 유지된다.
+		
+		[1] 세션 저장하기
+			(1) session.setAttribute(키, 값);
+			(2) 키라는 이름으로 값을 저장할 수 있다. (키 = 변수명)
+			
+		[2] 세션 꺼내오기
+			(1) Object obj = session.getAttribute(키);
+			(2) 키로 데이터를 꺼내올 수 있으며, Object 타입으로 반환된다.
+			(3) 다음 페이지에서 꺼낼 수 있음
+			(4) Object는 java의 가장 기본형
+	
+	 --%>
+	 
+	 <%
+	 	int x = 10;
+	 	int y = 20;
+	 	
+	 	session.setAttribute("x", x);
+	 	session.setAttribute("y", y);
+	 %>
+	 
+	 <a href="sessionPro1.jsp">다음 페이지1</a>
+</body>
+</html>
+
+
+
+
