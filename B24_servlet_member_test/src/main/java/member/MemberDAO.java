@@ -67,4 +67,127 @@ public class MemberDAO {
 		
 		return memberList;
 	}
+	
+	public boolean memberJoinPro(Member member) throws Exception{
+		
+		boolean noExist = false;
+		boolean success = false;
+		
+		try {
+			
+			conn = getConnection();
+			
+			String sql = " SELECT COUNT(*) FROM member WHERE memberId=? ";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, member.getId());
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				if(rs.getInt(1) == 0) {
+					noExist = true;
+				}
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			closeDatabase();
+		}
+		
+		// db에 id 중복값이 없다면 db에 저장
+		if(noExist) {
+			try {
+				
+				conn = getConnection();
+				
+				String sql = " INSERT INTO member VALUES(?,?,?,?) ";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, member.getId());
+				pstmt.setString(2, member.getPw());
+				pstmt.setString(3, member.getName());
+				pstmt.setString(4, member.getGender());
+				
+				int result = pstmt.executeUpdate();
+				
+				if(result > 0) {
+					success = true;
+				}
+				
+				
+			}catch(Exception e){
+				e.printStackTrace();
+			}finally {
+				closeDatabase();
+			}
+		}
+		
+		return success;
+	}
+	
+	public int memberLoginPro(String id, String pw) throws Exception{
+		int state = -1; // 1성공, 2아이디 오류, 3비밀번호 오류
+		boolean idExist = false;
+		boolean pwCorrect = false;
+		
+		// 아이디 확인
+		try {
+			
+			conn = getConnection();
+			
+			String sql = " SELECT COUNT(*) FROM member WHERE memberId=? ";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next() && rs.getInt(1) == 1) {
+				idExist = true;
+			}else {
+				state = 2;
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			closeDatabase();
+		}
+		
+		
+		// 비밀번호 확인
+		if(idExist) {
+			try {
+				
+				conn = getConnection();
+				
+				String sql = " SELECT memberPw FROM member WHERE memberId=? ";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1,id);
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					System.out.println(rs.getString(1)); 
+					if(rs.getString(1).equals(pw)) {
+						pwCorrect = true;						
+					}else {
+						state = 3;
+					}
+				}else {
+					state = 3;
+				}
+				
+			}catch(Exception e) {
+				e.printStackTrace();
+			}finally {
+				closeDatabase();
+			}
+			
+		}
+		
+		// 아이디와 패스워드 둘 다 맞으면 로그인 성공
+		if(idExist && pwCorrect) {
+			state = 1;
+		}
+		
+		return state;
+		
+	}
 }

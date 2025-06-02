@@ -20,10 +20,11 @@ public class MemberList extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		try {
+			System.out.println("memberList.do 진입");
 			ArrayList<Member> memberList = MemberDAO.instance.getMemberList();
 			request.setAttribute("memberList", memberList);
 			
-			RequestDispatcher dis = request.getRequestDispatcher("memberList.jsp");
+			RequestDispatcher dis = request.getRequestDispatcher("member/member/memberList.jsp");
 			dis.forward(request, response);
 			
 		}catch(Exception e){
