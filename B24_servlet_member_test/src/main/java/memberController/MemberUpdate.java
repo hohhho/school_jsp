@@ -12,22 +12,32 @@ import javax.servlet.http.HttpServletResponse;
 import member.Member;
 import member.MemberDAO;
 
-@WebServlet("/memberJoin.do")
-public class MemberJoin extends HttpServlet {
+@WebServlet("/memberUpdate.do")
+public class MemberUpdate extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("memberUpdate.do / doGet 진입");
 		
-		RequestDispatcher dis = request.getRequestDispatcher("member/member/memberJoin.jsp");
-		dis.forward(request, response);
+		String id = (String)request.getSession().getAttribute("log");
 		
+		try {
+			Member member = MemberDAO.instance.getMember(id);
+			request.setAttribute("member", member);
+			
+			RequestDispatcher dis = request.getRequestDispatcher("member/member/memberUpdate.jsp");
+			dis.forward(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		System.out.println("memberUpdate.do / doPost 진입");
 		
 		request.setCharacterEncoding("UTF-8");
 		
-		String id = request.getParameter("id");
+		String id = (String)request.getSession().getAttribute("log");
 		String pw = request.getParameter("pw");
 		String name = request.getParameter("name");
 		String gender = request.getParameter("gender");
@@ -35,15 +45,16 @@ public class MemberJoin extends HttpServlet {
 		Member member = new Member(id,pw,name,gender);
 		
 		try {
-			boolean success = MemberDAO.instance.memberJoinPro(member);
-			request.setAttribute("success", success);
+			boolean updateSuccess = MemberDAO.instance.memberUpdate(member);
+			request.setAttribute("updateSuccess", updateSuccess);
 			
-			RequestDispatcher dis = request.getRequestDispatcher("member/member/memberJoinPro.jsp");
+			RequestDispatcher dis = request.getRequestDispatcher("member/member/memberUpdatePro.jsp");
 			dis.forward(request, response);
 			
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 }

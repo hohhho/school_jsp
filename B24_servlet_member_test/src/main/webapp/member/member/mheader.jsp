@@ -14,12 +14,25 @@
 	<div align="center">
 		<h1>회원관리페이지</h1>
 		<table border="1">
-			<tr>
-				<td><a href="<%=path %>/memberList.do">회원전체정보</a></td>
-				<td><a href="<%=path%>/memberJoin.do">회원가입</a></td>
-				<td><a href="<%=path%>/memberLogin.do">로그인</a></td>
-				<td><a href="">ADMIN</a></td>
-			</tr>
+			<c:choose>
+				<c:when test="${empty sessionScope.log }">
+					<tr>
+						<td><a href="<%=path %>/memberList.do">회원전체정보</a></td>
+						<td><a href="<%=path%>/memberJoin.do">회원가입</a></td>
+						<td><a href="<%=path%>/memberLogin.do">로그인</a></td>
+						<td><a href="">ADMIN</a></td>
+					</tr>
+				</c:when>
+				<c:otherwise>
+					<tr>
+						<td><a href="<%=path %>/memberList.do">회원전체정보</a></td>
+						<td><a href="<%=path %>/memberLogoutPro.do">로그아웃</a></td>
+						<td><a href="<%=path %>/memberUpdate.do">회원정보수정</a></td>
+						<td><a href="<%=path %>/memberDelete.do">회원탈퇴</a></td>
+						<td>[${log } 님 로그인 중]</td>
+					</tr>
+				</c:otherwise>
+			</c:choose>
 		</table>
 	</div>
 </body>

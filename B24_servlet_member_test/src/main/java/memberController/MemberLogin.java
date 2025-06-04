@@ -30,7 +30,7 @@ public class MemberLogin extends HttpServlet {
 			System.out.println(state);
 			
 			if(state == 1) {
-				request.setAttribute("log", id);
+				request.getSession().setAttribute("log", id);
 			}
 			
 			RequestDispatcher dis = request.getRequestDispatcher("member/member/memberLoginPro.jsp");

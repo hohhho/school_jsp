@@ -190,4 +190,61 @@ public class MemberDAO {
 		return state;
 		
 	}
+	
+	public Member getMember(String id) throws Exception{
+		Member member = null;
+		
+		try {
+			conn = getConnection();
+			
+			String sql = " SELECT * FROM member WHERE memberId=? ";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				String pw = rs.getString(2);
+				String name = rs.getString(3);
+				String gender = rs.getString(4);
+				
+				member = new Member(id,pw,name,gender);
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			closeDatabase();
+		}
+		
+		return member;
+	}
+	
+	public boolean memberUpdate(Member member) throws Exception{
+		boolean success = false;
+		
+		try {
+			conn = getConnection();
+			
+			String sql = " UPDATE member SET memberPw=?, memberName=?, memberGender=? WHERE memberId=? ";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, member.getPw());
+			pstmt.setString(2, member.getName());
+			pstmt.setString(3, member.getGender());
+			pstmt.setString(4, member.getId());
+			
+			int updateCount = pstmt.executeUpdate();
+			System.out.println(updateCount); // log
+			
+			if(updateCount > 0) {
+				success = true;
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			closeDatabase();
+		}
+		
+		return success;
+		
+	}
+	
 }
